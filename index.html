@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swift Line Capital — Funding Application</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #F3F4F6;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px 16px 40px;
+    }
+
+    .survey-wrapper {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    /* ---- Header ---- */
+    .survey-header {
+      background: #0F172A;
+      border-radius: 16px 16px 0 0;
+      padding: 22px 40px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      background: #3B82F6;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .logo-text {
+      color: #FFFFFF;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .logo-text span {
+      color: #3B82F6;
+    }
+
+    /* ---- Progress ---- */
+    .progress-track {
+      background: #E2E8F0;
+      height: 3px;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .progress-fill {
+      height: 3px;
+      background: #3B82F6;
+      transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* ---- Card ---- */
+    .survey-card {
+      background: #FFFFFF;
+      border-radius: 0 0 16px 16px; /* top corners handled by progress track */
+      box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ---- Slides ---- */
+    .slide {
+      display: none;
+      padding: 44px 40px 40px;
+      animation: slideIn 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .slide.slide-back {
+      animation: slideInBack 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(28px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideInBack {
+      from { opacity: 0; transform: translateX(-28px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .step-badge {
+      display: none;
+    }
+
+    .question-title {
+      font-size: 21px;
+      font-weight: 700;
+      color: #0F172A;
+      line-height: 1.45;
+      margin-bottom: 6px;
+    }
+
+    .question-hint {
+      font-size: 13.5px;
+      color: #94A3B8;
+      margin-bottom: 26px;
+    }
+
+    /* ---- Option buttons ---- */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 4px;
+    }
+
+    .opt {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 16px;
+      border: 2px solid #E2E8F0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s;
+      color: #1E293B;
+      font-size: 15px;
+      user-select: none;
+      -webkit-user-select: none;
+      position: relative;
+    }
+
+    .opt:hover {
+      border-color: #BFDBFE;
+      background: #F8FBFF;
+    }
+
+    .opt input[type="radio"],
+    .opt input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .opt-indicator {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #CBD5E1;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.18s, background 0.18s;
+    }
+
+    .opt-indicator.square {
+      border-radius: 6px;
+    }
+
+    .opt-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .opt-check {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .opt:has(input:checked) {
+      border-color: #3B82F6;
+      background: #EFF6FF;
+    }
+
+    .opt:has(input:checked) .opt-indicator {
+      border-color: #3B82F6;
+      background: #3B82F6;
+    }
+
+    .opt:has(input[type="radio"]:checked) .opt-dot { opacity: 1; }
+    .opt:has(input[type="checkbox"]:checked) .opt-check { opacity: 1; }
+
+    /* ---- Text inputs ---- */
+    .field-wrap {
+      margin-bottom: 4px;
+    }
+
+    .text-field {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #E2E8F0;
+      border-radius: 10px;
+      font-size: 15px;
+      color: #0F172A;
+      background: #FAFAFA;
+      outline: none;
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+      -webkit-appearance: none;
+    }
+
+    .text-field:focus {
+      border-color: #3B82F6;
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .text-field::placeholder {
+      color: #CBD5E1;
+    }
+
+    /* ---- Error ---- */
+    .err {
+      color: #EF4444;
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .err.show { display: flex; }
+
+    .err::before {
+      content: '';
+      display: block;
+      width: 14px;
+      height: 14px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23EF4444'%3E%3Cpath fill-rule='evenodd' d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z' clip-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat;
+      flex-shrink: 0;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 32px;
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: #94A3B8;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 6px 0;
+      transition: color 0.18s;
+    }
+
+    .btn-back:hover { color: #475569; }
+
+    .btn-back svg { width: 15px; height: 15px; }
+
+    .btn-next {
+      background: #3B82F6;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 30px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+      letter-spacing: -0.1px;
+    }
+
+    .btn-next:hover {
+      background: #2563EB;
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-next:active { transform: translateY(0); }
+
+    .btn-submit {
+      background: #10B981;
+    }
+
+    .btn-submit:hover {
+      background: #059669;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+    }
+
+    /* ---- Thank you ---- */
+    #slide-thanks {
+      text-align: center;
+      padding: 60px 40px;
+    }
+
+    .ty-icon {
+      width: 72px;
+      height: 72px;
+      background: #DCFCE7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 22px;
+    }
+
+    .ty-icon svg { width: 36px; height: 36px; }
+
+    .ty-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 10px;
+    }
+
+    .ty-sub {
+      font-size: 15px;
+      color: #64748B;
+      line-height: 1.6;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 520px) {
+      .survey-header { padding: 18px 22px; }
+      .slide { padding: 32px 22px 28px; }
+      #slide-thanks { padding: 48px 22px; }
+      .question-title { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="survey-wrapper">
+
+  <!-- Progress bar -->
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <!-- Survey card -->
+  <div class="survey-card">
+
+    <!-- Q1: Loan type -->
+    <div class="slide active" id="slide-1">
+<div class="question-title">What type of loan are you looking for?</div>
+      <div class="question-hint">Check all that apply</div>
+      <div class="options">
+        <label class="opt">
+          <input type="checkbox" name="q1" value="Fix and Flip Bridge Loan">
+          <span class="opt-indicator square">
+            <svg class="opt-check" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 5,9.5 10.5,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Fix and Flip Bridge Loan
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q1" value="DSCR - Turn Key New Purchase">
+          <span class="opt-indicator square">
+            <svg class="opt-check" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 5,9.5 10.5,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          DSCR &ndash; Turn Key New Purchase
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q1" value="DSCR - Refinance">
+          <span class="opt-indicator square">
+            <svg class="opt-check" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 5,9.5 10.5,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          DSCR &ndash; Refinance
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q1" value="Ground Up Construction">
+          <span class="opt-indicator square">
+            <svg class="opt-check" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 5,9.5 10.5,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Ground Up Construction
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q1" value="Rehab Only Loan">
+          <span class="opt-indicator square">
+            <svg class="opt-check" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 5,9.5 10.5,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Rehab Only Loan
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q1" value="Revolving Line of Credit">
+          <span class="opt-indicator square">
+            <svg class="opt-check" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 5,9.5 10.5,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Revolving Line of Credit
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q1" value="Gap Funding">
+          <span class="opt-indicator square">
+            <svg class="opt-check" viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 5,9.5 10.5,2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Gap Funding
+        </label>
+      </div>
+      <div class="err" id="err-1">Please select at least one option to continue.</div>
+      <div class="nav">
+        <div></div>
+        <button class="btn-next" onclick="goNext(1)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Q2: Property status -->
+    <div class="slide" id="slide-2">
+      <span class="step-badge" id="badge-2">Step 2</span>
+      <div class="question-title">Do you have a specific property picked out needing funding?</div>
+      <div class="options">
+        <label class="opt">
+          <input type="radio" name="q2" value="1">
+          <span class="opt-indicator"><span class="opt-dot"></span></span>
+          Yes, it&rsquo;s under contract
+        </label>
+        <label class="opt">
+          <input type="radio" name="q2" value="2">
+          <span class="opt-indicator"><span class="opt-dot"></span></span>
+          Yes, not under contract
+        </label>
+        <label class="opt">
+          <input type="radio" name="q2" value="3">
+          <span class="opt-indicator"><span class="opt-dot"></span></span>
+          Yes, I own it already
+        </label>
+        <label class="opt">
+          <input type="radio" name="q2" value="4">
+          <span class="opt-indicator"><span class="opt-dot"></span></span>
+          Not yet, I&rsquo;m still exploring options
+        </label>
+      </div>
+      <div class="err" id="err-2">Please select an option to continue.</div>
+      <div class="nav">
+        <button class="btn-back" onclick="goBack(2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next" onclick="goNext(2)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Q3: Property address (Q2 = 1, 2, 3) -->
+    <div class="slide" id="slide-3">
+      <span class="step-badge" id="badge-3">Step 3</span>
+      <div class="question-title">What is the full address for the property?</div>
+      <div class="field-wrap">
+        <input class="text-field" type="text" id="q3" placeholder="123 Main St, City, State, ZIP" autocomplete="street-address">
+      </div>
+      <div class="err" id="err-3">Please enter the property address to continue.</div>
+      <div class="nav">
+        <button class="btn-back" onclick="goBack(3)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next" onclick="goNext(3)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Q4: Purchase price (Q2 = 1, 2, 3) -->
+    <div class="slide" id="slide-4">
+      <span class="step-badge" id="badge-4">Step 4</span>
+      <div class="question-title">What is the purchase price?</div>
+      <div class="field-wrap">
+        <input class="text-field" type="text" id="q4" placeholder="e.g. $350,000" inputmode="numeric" oninput="formatCurrency(this)">
+      </div>
+      <div class="err" id="err-4">Please enter the purchase price to continue.</div>
+      <div class="nav">
+        <button class="btn-back" onclick="goBack(4)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next" onclick="goNext(4)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Q5: Rehab budget (Q2 = 1, 2, 3) -->
+    <div class="slide" id="slide-5">
+      <span class="step-badge" id="badge-5">Step 5</span>
+      <div class="question-title">What is the estimated rehab budget?</div>
+      <div class="field-wrap">
+        <input class="text-field" type="text" id="q5" placeholder="e.g. $75,000" inputmode="numeric" oninput="formatCurrency(this)">
+      </div>
+      <div class="err" id="err-5">Please enter your rehab budget to continue.</div>
+      <div class="nav">
+        <button class="btn-back" onclick="goBack(5)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next" onclick="goNext(5)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Q6: ARV (Q2 = 1, 2, 3) -->
+    <div class="slide" id="slide-6">
+      <span class="step-badge" id="badge-6">Step 6</span>
+      <div class="question-title">What is the ARV (after repair value)?</div>
+      <div class="field-wrap">
+        <input class="text-field" type="text" id="q6" placeholder="e.g. $500,000" inputmode="numeric" oninput="formatCurrency(this)">
+      </div>
+      <div class="err" id="err-6">Please enter the after repair value to continue.</div>
+      <div class="nav">
+        <button class="btn-back" onclick="goBack(6)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next" onclick="goNext(6)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Q7: Credit score (always shown) -->
+    <div class="slide" id="slide-7">
+      <span class="step-badge" id="badge-7">Step 7</span>
+      <div class="question-title">What is your credit score?</div>
+      <div class="question-hint">An estimate is fine if you're not sure of the exact number.</div>
+      <div class="field-wrap">
+        <input class="text-field" type="number" id="q7" placeholder="e.g. 720" min="300" max="850">
+      </div>
+      <div class="err" id="err-7">Please enter your credit score to continue.</div>
+      <div class="nav">
+        <button class="btn-back" onclick="goBack(7)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next" onclick="goNext(7)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Q8: Flips completed (Q2 = 4 only) -->
+    <div class="slide" id="slide-8">
+      <span class="step-badge" id="badge-8">Step 8</span>
+      <div class="question-title">How many flips have you completed in your name or LLC in the last 3 years?</div>
+      <div class="field-wrap">
+        <input class="text-field" type="number" id="q8" placeholder="e.g. 3" min="0">
+      </div>
+      <div class="err" id="err-8">Please enter a number to continue.</div>
+      <div class="nav">
+        <button class="btn-back" onclick="goBack(8)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next" onclick="goNext(8)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Q9: Gap funding interest (always) -->
+    <div class="slide" id="slide-9">
+      <span class="step-badge" id="badge-9">Step 9</span>
+      <div class="question-title">Are you also interested in additional gap funding or revolving credit limit options to help with down payments, rehab costs, holding costs, marketing, payroll, or working capital?</div>
+      <div class="options">
+        <label class="opt">
+          <input type="radio" name="q9" value="Yes">
+          <span class="opt-indicator"><span class="opt-dot"></span></span>
+          Yes
+        </label>
+        <label class="opt">
+          <input type="radio" name="q9" value="I don't need it">
+          <span class="opt-indicator"><span class="opt-dot"></span></span>
+          I don&rsquo;t need it
+        </label>
+      </div>
+      <div class="err" id="err-9">Please select an option to continue.</div>
+      <div class="nav">
+        <button class="btn-back" onclick="goBack(9)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next" onclick="goNext(9)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Q10: Full name (always) -->
+    <div class="slide" id="slide-10">
+      <span class="step-badge" id="badge-10">Step 10</span>
+      <div class="question-title">What is your full name?</div>
+      <div class="field-wrap">
+        <input class="text-field" type="text" id="q10" placeholder="First and last name" autocomplete="name">
+      </div>
+      <div class="err" id="err-10">Please enter your name to continue.</div>
+      <div class="nav">
+        <button class="btn-back" onclick="goBack(10)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next" onclick="goNext(10)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Q11: Phone (always) -->
+    <div class="slide" id="slide-11">
+      <span class="step-badge" id="badge-11">Step 11</span>
+      <div class="question-title">What is your cell phone number?</div>
+      <div class="question-hint">So we can text you our funding options that you qualify for.</div>
+      <div class="field-wrap">
+        <input class="text-field" type="tel" id="q11" placeholder="(555) 000-0000" autocomplete="tel">
+      </div>
+      <div class="err" id="err-11">Please enter your phone number to continue.</div>
+      <div class="nav">
+        <button class="btn-back" onclick="goBack(11)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next" onclick="goNext(11)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Q12: Email (always) -->
+    <div class="slide" id="slide-12">
+      <span class="step-badge" id="badge-12">Step 12</span>
+      <div class="question-title">What is your email address?</div>
+      <div class="question-hint">So we can email you a term sheet and our offers.</div>
+      <div class="field-wrap">
+        <input class="text-field" type="email" id="q12" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="err" id="err-12">Please enter a valid email address to continue.</div>
+      <div class="nav">
+        <button class="btn-back" onclick="goBack(12)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next btn-submit" onclick="submitSurvey()">Submit Application</button>
+      </div>
+    </div>
+
+    <!-- Thank you (shown briefly before redirect) -->
+    <div class="slide" id="slide-thanks">
+      <div class="ty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17l-5-5"/>
+        </svg>
+      </div>
+      <div class="ty-title">You're all set!</div>
+      <div class="ty-sub">Thanks for applying. We're reviewing your information and will be in touch soon with your funding options.</div>
+    </div>
+
+  </div><!-- end survey-card -->
+</div><!-- end survey-wrapper -->
+
+<script>
+  // ============================================================
+  // CONFIGURATION
+  // ============================================================
+  const REDIRECT_URL   = 'https://apply.swiftlinecapital.com/book';
+  const REDIRECT_DELAY = 2000; // ms to show thank-you before redirecting
+  const WEBHOOK_URL    = 'https://services.leadconnectorhq.com/hooks/fbVNgszVHry5I8o9nQRJ/webhook-trigger/2554490a-f801-4f18-b274-b49864f4aa70';
+  // ============================================================
+
+  let currentSlide = 1;
+
+  // ---- Currency formatting ----
+  function formatCurrency(input) {
+    // Strip everything except digits
+    const raw = input.value.replace(/[^0-9]/g, '');
+    if (raw === '') { input.value = ''; return; }
+    const num = parseInt(raw, 10);
+    input.value = '$' + num.toLocaleString('en-US');
+  }
+
+  // ---- Path logic (driven by Q1 selections) ----
+  function isRevolvingOnly() {
+    const checked = Array.from(document.querySelectorAll('input[name="q1"]:checked')).map(e => e.value);
+    return checked.length === 1 && checked[0] === 'Revolving Line of Credit';
+  }
+
+  function getPath() {
+    if (isRevolvingOnly()) {
+      // Revolving Line of Credit only: skip Q2, Q3, Q4, Q5, Q6, Q8, Q9
+      return [1, 7, 10, 11, 12];
+    }
+    // Any other selection (including mixed with revolving): full path
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  }
+
+  function updateProgress() {
+    const path  = getPath();
+    const pos   = path.indexOf(currentSlide);
+    const total = path.length;
+    const pct   = ((pos + 1) / total) * 100;
+
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    const badge = document.getElementById('badge-' + currentSlide);
+    if (badge) badge.textContent = 'Step ' + (pos + 1) + ' of ' + total;
+  }
+
+  function showSlide(num, backwards) {
+    const prev = document.getElementById('slide-' + currentSlide);
+    if (prev) prev.classList.remove('active', 'slide-back');
+
+    currentSlide = num;
+    const next = document.getElementById('slide-' + currentSlide) || document.getElementById('slide-thanks');
+    next.classList.remove('slide-back');
+    if (backwards) next.classList.add('slide-back');
+    next.classList.add('active');
+
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ---- Validation ----
+  function validate(slideNum) {
+    const err = document.getElementById('err-' + slideNum);
+    let valid = true;
+
+    if (slideNum === 1) {
+      valid = document.querySelectorAll('input[name="q1"]:checked').length > 0;
+    } else if (slideNum === 2) {
+      valid = !!document.querySelector('input[name="q2"]:checked');
+    } else if ([3, 10, 11].includes(slideNum)) {
+      valid = document.getElementById('q' + slideNum).value.trim() !== '';
+    } else if ([4, 5, 6].includes(slideNum)) {
+      // Currency fields — check there's at least one digit entered
+      const raw = document.getElementById('q' + slideNum).value.replace(/[^0-9]/g, '');
+      valid = raw.length > 0;
+    } else if (slideNum === 7) {
+      const v = document.getElementById('q7').value.trim();
+      valid = v !== '' && !isNaN(Number(v));
+    } else if (slideNum === 8) {
+      const v = document.getElementById('q8').value.trim();
+      valid = v !== '' && !isNaN(Number(v)) && Number(v) >= 0;
+    } else if (slideNum === 9) {
+      valid = !!document.querySelector('input[name="q9"]:checked');
+    } else if (slideNum === 12) {
+      const v = document.getElementById('q12').value.trim();
+      valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    }
+
+    if (err) err.classList.toggle('show', !valid);
+    return valid;
+  }
+
+  // ---- Navigation ----
+  function goNext(fromSlide) {
+    if (!validate(fromSlide)) return;
+
+    const path = getPath();
+    const idx  = path.indexOf(fromSlide);
+
+    if (idx < path.length - 1) {
+      showSlide(path[idx + 1], false);
+    }
+  }
+
+  function goBack(fromSlide) {
+    const path = getPath();
+    const idx  = path.indexOf(fromSlide);
+
+    if (idx > 0) {
+      showSlide(path[idx - 1], true);
+    }
+  }
+
+  // ---- Submit ----
+  async function submitSurvey() {
+    if (!validate(12)) return;
+
+    const q2el  = document.querySelector('input[name="q2"]:checked');
+    const q2raw = q2el ? q2el.value : '';
+    const q2label = q2raw === '1' ? "Yes, it's under contract"
+                  : q2raw === '2' ? "Yes, not under contract"
+                  : q2raw === '3' ? "Yes, I own it already"
+                  : q2raw === '4' ? "Not yet, I'm still exploring options"
+                  : '';
+
+    const answers = {
+      loan_types:       Array.from(document.querySelectorAll('input[name="q1"]:checked')).map(e => e.value),
+      property_status:  q2label,
+      property_address: document.getElementById('q3').value,
+      purchase_price:   document.getElementById('q4').value,
+      rehab_budget:     document.getElementById('q5').value,
+      arv:              document.getElementById('q6').value,
+      credit_score:     document.getElementById('q7').value,
+      flips_completed:  document.getElementById('q8').value,
+      gap_funding:      (document.querySelector('input[name="q9"]:checked') || {}).value || '',
+      full_name:        document.getElementById('q10').value,
+      phone:            document.getElementById('q11').value,
+      email:            document.getElementById('q12').value,
+    };
+
+    if (WEBHOOK_URL) {
+      try {
+        await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(answers),
+        });
+      } catch (e) {
+        console.error('Webhook error:', e);
+      }
+    }
+
+    // Show thank-you then redirect
+    document.getElementById('slide-12').classList.remove('active');
+    document.getElementById('slide-thanks').classList.add('active');
+    document.getElementById('progressFill').style.width = '100%';
+
+    if (REDIRECT_DELAY > 0) {
+      setTimeout(() => { window.location.href = REDIRECT_URL; }, REDIRECT_DELAY);
+    } else {
+      window.location.href = REDIRECT_URL;
+    }
+  }
+
+  // ---- Init ----
+  updateProgress();
+</script>
+
+</body>
+</html>
