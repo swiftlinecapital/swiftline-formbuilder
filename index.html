@@ -663,7 +663,8 @@
   // ============================================================
   // CONFIGURATION
   // ============================================================
-  const REDIRECT_URL   = 'https://apply.swiftlinecapital.com/book';
+  const REDIRECT_URL_LOW      = 'https://apply.swiftlinecapital.com/tydq';  // credit score 649 and below
+  const REDIRECT_URL_QUALIFY  = 'https://apply.swiftlinecapital.com/apply';  // credit score 650 and above
   const REDIRECT_DELAY = 2000; // ms to show thank-you before redirecting
   const WEBHOOK_URL    = 'https://services.leadconnectorhq.com/hooks/fbVNgszVHry5I8o9nQRJ/webhook-trigger/2554490a-f801-4f18-b274-b49864f4aa70';
   // ============================================================
@@ -812,15 +813,19 @@
       }
     }
 
+    // Determine redirect based on credit score
+    const creditScore = parseInt(document.getElementById('q7').value.trim(), 10);
+    const redirectTo  = creditScore >= 650 ? REDIRECT_URL_QUALIFY : REDIRECT_URL_LOW;
+
     // Show thank-you then redirect
     document.getElementById('slide-12').classList.remove('active');
     document.getElementById('slide-thanks').classList.add('active');
     document.getElementById('progressFill').style.width = '100%';
 
     if (REDIRECT_DELAY > 0) {
-      setTimeout(() => { window.location.href = REDIRECT_URL; }, REDIRECT_DELAY);
+      setTimeout(() => { window.location.href = redirectTo; }, REDIRECT_DELAY);
     } else {
-      window.location.href = REDIRECT_URL;
+      window.location.href = redirectTo;
     }
   }
 
