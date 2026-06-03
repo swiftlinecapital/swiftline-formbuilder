@@ -829,14 +829,21 @@
     };
  
     if (WEBHOOK_URL) {
-      try {
-        await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(answers),
-        });
-      } catch (e) {
-        console.error('Webhook error:', e);
+      // sendBeacon bypasses CORS and survives page navigation
+      const payload = new Blob([JSON.stringify(answers)], { type: 'application/json' });
+      const sent = navigator.sendBeacon(WEBHOOK_URL, payload);
+      // Fallback to fetch with keepalive if sendBeacon not available
+      if (!sent) {
+        try {
+          await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(answers),
+            keepalive: true,
+          });
+        } catch (e) {
+          console.error('Webhook error:', e);
+        }
       }
     }
  
