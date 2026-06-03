@@ -615,9 +615,9 @@
       <div class="question-title">What is your cell phone number?</div>
       <div class="question-hint">So we can text you our funding options that you qualify for.</div>
       <div class="field-wrap">
-        <input class="text-field" type="tel" id="q11" placeholder="(555) 000-0000" autocomplete="tel">
+        <input class="text-field" type="tel" id="q11" placeholder="xxx-xxx-xxxx" inputmode="numeric" maxlength="12" autocomplete="tel" oninput="formatPhone(this)">
       </div>
-      <div class="err" id="err-11">Please enter your phone number to continue.</div>
+      <div class="err" id="err-11">Please enter a valid 10-digit phone number (xxx-xxx-xxxx) to continue.</div>
       <div class="nav">
         <button class="btn-back" onclick="goBack(11)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -672,6 +672,18 @@
  
   let currentSlide = 1;
   let q2Value = null; // tracks Q2 answer for property question branching
+ 
+  // ---- Phone formatting (xxx-xxx-xxxx) ----
+  function formatPhone(input) {
+    let digits = input.value.replace(/\D/g, '').substring(0, 10);
+    if (digits.length <= 3) {
+      input.value = digits;
+    } else if (digits.length <= 6) {
+      input.value = digits.substring(0, 3) + '-' + digits.substring(3);
+    } else {
+      input.value = digits.substring(0, 3) + '-' + digits.substring(3, 6) + '-' + digits.substring(6);
+    }
+  }
  
   // ---- Currency formatting ----
   function formatCurrency(input) {
@@ -736,8 +748,12 @@
       valid = document.querySelectorAll('input[name="q1"]:checked').length > 0;
     } else if (slideNum === 2) {
       valid = !!document.querySelector('input[name="q2"]:checked');
-    } else if ([3, 10, 11].includes(slideNum)) {
+    } else if ([3, 10].includes(slideNum)) {
       valid = document.getElementById('q' + slideNum).value.trim() !== '';
+    } else if (slideNum === 11) {
+      // Require exactly 10 digits for phone number
+      const digits = document.getElementById('q11').value.replace(/\D/g, '');
+      valid = digits.length === 10;
     } else if ([4, 5, 6].includes(slideNum)) {
       // Currency fields — check there's at least one digit entered
       const raw = document.getElementById('q' + slideNum).value.replace(/[^0-9]/g, '');
@@ -853,3 +869,6 @@
   // ---- Init ----
   updateProgress();
 </script>
+ 
+</body>
+</html>
