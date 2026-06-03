@@ -854,16 +854,8 @@
       redirectTo = REDIRECT_URL_EXPLORING;
     }
  
-    // Show thank-you then redirect
-    document.getElementById('slide-12').classList.remove('active');
-    document.getElementById('slide-thanks').classList.add('active');
-    document.getElementById('progressFill').style.width = '100%';
- 
-    if (REDIRECT_DELAY > 0) {
-      setTimeout(() => { window.location.href = redirectTo; }, REDIRECT_DELAY);
-    } else {
-      window.location.href = redirectTo;
-    }
+    // Immediately redirect the full browser window (breaks out of iframe)
+    window.top.location.href = redirectTo;
   }
  
   // ---- Init ----
