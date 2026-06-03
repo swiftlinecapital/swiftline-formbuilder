@@ -6,7 +6,7 @@
   <title>Swift Line Capital — Funding Application</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
       background: #F3F4F6;
@@ -16,12 +16,12 @@
       justify-content: center;
       padding: 24px 16px 40px;
     }
-
+ 
     .survey-wrapper {
       width: 100%;
       max-width: 640px;
     }
-
+ 
     /* ---- Header ---- */
     .survey-header {
       background: #0F172A;
@@ -31,7 +31,7 @@
       align-items: center;
       gap: 10px;
     }
-
+ 
     .logo-mark {
       width: 32px;
       height: 32px;
@@ -42,37 +42,37 @@
       justify-content: center;
       flex-shrink: 0;
     }
-
+ 
     .logo-mark svg {
       width: 18px;
       height: 18px;
     }
-
+ 
     .logo-text {
       color: #FFFFFF;
       font-size: 17px;
       font-weight: 700;
       letter-spacing: -0.3px;
     }
-
+ 
     .logo-text span {
       color: #3B82F6;
     }
-
+ 
     /* ---- Progress ---- */
     .progress-track {
       background: #E2E8F0;
       height: 3px;
       border-radius: 16px 16px 0 0;
     }
-
+ 
     .progress-fill {
       height: 3px;
       background: #3B82F6;
       transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
       border-radius: 0 2px 2px 0;
     }
-
+ 
     /* ---- Card ---- */
     .survey-card {
       background: #FFFFFF;
@@ -81,36 +81,36 @@
       overflow: hidden;
       position: relative;
     }
-
+ 
     /* ---- Slides ---- */
     .slide {
       display: none;
       padding: 44px 40px 40px;
       animation: slideIn 0.32s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
+ 
     .slide.active {
       display: block;
     }
-
+ 
     .slide.slide-back {
       animation: slideInBack 0.32s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
+ 
     @keyframes slideIn {
       from { opacity: 0; transform: translateX(28px); }
       to   { opacity: 1; transform: translateX(0); }
     }
-
+ 
     @keyframes slideInBack {
       from { opacity: 0; transform: translateX(-28px); }
       to   { opacity: 1; transform: translateX(0); }
     }
-
+ 
     .step-badge {
       display: none;
     }
-
+ 
     .question-title {
       font-size: 21px;
       font-weight: 700;
@@ -118,13 +118,13 @@
       line-height: 1.45;
       margin-bottom: 6px;
     }
-
+ 
     .question-hint {
       font-size: 13.5px;
       color: #94A3B8;
       margin-bottom: 26px;
     }
-
+ 
     /* ---- Option buttons ---- */
     .options {
       display: flex;
@@ -132,7 +132,7 @@
       gap: 9px;
       margin-bottom: 4px;
     }
-
+ 
     .opt {
       display: flex;
       align-items: center;
@@ -148,12 +148,12 @@
       -webkit-user-select: none;
       position: relative;
     }
-
+ 
     .opt:hover {
       border-color: #BFDBFE;
       background: #F8FBFF;
     }
-
+ 
     .opt input[type="radio"],
     .opt input[type="checkbox"] {
       position: absolute;
@@ -161,7 +161,7 @@
       width: 0;
       height: 0;
     }
-
+ 
     .opt-indicator {
       width: 20px;
       height: 20px;
@@ -173,11 +173,11 @@
       justify-content: center;
       transition: border-color 0.18s, background 0.18s;
     }
-
+ 
     .opt-indicator.square {
       border-radius: 6px;
     }
-
+ 
     .opt-dot {
       width: 8px;
       height: 8px;
@@ -186,32 +186,32 @@
       opacity: 0;
       transition: opacity 0.15s;
     }
-
+ 
     .opt-check {
       width: 10px;
       height: 10px;
       opacity: 0;
       transition: opacity 0.15s;
     }
-
+ 
     .opt:has(input:checked) {
       border-color: #3B82F6;
       background: #EFF6FF;
     }
-
+ 
     .opt:has(input:checked) .opt-indicator {
       border-color: #3B82F6;
       background: #3B82F6;
     }
-
+ 
     .opt:has(input[type="radio"]:checked) .opt-dot { opacity: 1; }
     .opt:has(input[type="checkbox"]:checked) .opt-check { opacity: 1; }
-
+ 
     /* ---- Text inputs ---- */
     .field-wrap {
       margin-bottom: 4px;
     }
-
+ 
     .text-field {
       width: 100%;
       padding: 14px 16px;
@@ -224,17 +224,17 @@
       transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
       -webkit-appearance: none;
     }
-
+ 
     .text-field:focus {
       border-color: #3B82F6;
       background: #FFFFFF;
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
     }
-
+ 
     .text-field::placeholder {
       color: #CBD5E1;
     }
-
+ 
     /* ---- Error ---- */
     .err {
       color: #EF4444;
@@ -244,9 +244,9 @@
       align-items: center;
       gap: 6px;
     }
-
+ 
     .err.show { display: flex; }
-
+ 
     .err::before {
       content: '';
       display: block;
@@ -255,7 +255,7 @@
       background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23EF4444'%3E%3Cpath fill-rule='evenodd' d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z' clip-rule='evenodd'/%3E%3C/svg%3E") center/contain no-repeat;
       flex-shrink: 0;
     }
-
+ 
     /* ---- Navigation ---- */
     .nav {
       display: flex;
@@ -263,7 +263,7 @@
       justify-content: space-between;
       margin-top: 32px;
     }
-
+ 
     .btn-back {
       display: flex;
       align-items: center;
@@ -277,11 +277,11 @@
       padding: 6px 0;
       transition: color 0.18s;
     }
-
+ 
     .btn-back:hover { color: #475569; }
-
+ 
     .btn-back svg { width: 15px; height: 15px; }
-
+ 
     .btn-next {
       background: #3B82F6;
       color: #FFFFFF;
@@ -294,30 +294,30 @@
       transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
       letter-spacing: -0.1px;
     }
-
+ 
     .btn-next:hover {
       background: #2563EB;
       box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
       transform: translateY(-1px);
     }
-
+ 
     .btn-next:active { transform: translateY(0); }
-
+ 
     .btn-submit {
       background: #10B981;
     }
-
+ 
     .btn-submit:hover {
       background: #059669;
       box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
     }
-
+ 
     /* ---- Thank you ---- */
     #slide-thanks {
       text-align: center;
       padding: 60px 40px;
     }
-
+ 
     .ty-icon {
       width: 72px;
       height: 72px;
@@ -328,22 +328,22 @@
       justify-content: center;
       margin: 0 auto 22px;
     }
-
+ 
     .ty-icon svg { width: 36px; height: 36px; }
-
+ 
     .ty-title {
       font-size: 24px;
       font-weight: 700;
       color: #0F172A;
       margin-bottom: 10px;
     }
-
+ 
     .ty-sub {
       font-size: 15px;
       color: #64748B;
       line-height: 1.6;
     }
-
+ 
     /* ---- Responsive ---- */
     @media (max-width: 520px) {
       .survey-header { padding: 18px 22px; }
@@ -354,17 +354,17 @@
   </style>
 </head>
 <body>
-
+ 
 <div class="survey-wrapper">
-
+ 
   <!-- Progress bar -->
   <div class="progress-track">
     <div class="progress-fill" id="progressFill" style="width:0%"></div>
   </div>
-
+ 
   <!-- Survey card -->
   <div class="survey-card">
-
+ 
     <!-- Q1: Loan type -->
     <div class="slide active" id="slide-1">
 <div class="question-title">What type of loan are you looking for?</div>
@@ -426,7 +426,7 @@
         <button class="btn-next" onclick="goNext(1)">Continue &rarr;</button>
       </div>
     </div>
-
+ 
     <!-- Q2: Property status -->
     <div class="slide" id="slide-2">
       <span class="step-badge" id="badge-2">Step 2</span>
@@ -462,7 +462,7 @@
         <button class="btn-next" onclick="goNext(2)">Continue &rarr;</button>
       </div>
     </div>
-
+ 
     <!-- Q3: Property address (Q2 = 1, 2, 3) -->
     <div class="slide" id="slide-3">
       <span class="step-badge" id="badge-3">Step 3</span>
@@ -479,7 +479,7 @@
         <button class="btn-next" onclick="goNext(3)">Continue &rarr;</button>
       </div>
     </div>
-
+ 
     <!-- Q4: Purchase price (Q2 = 1, 2, 3) -->
     <div class="slide" id="slide-4">
       <span class="step-badge" id="badge-4">Step 4</span>
@@ -496,7 +496,7 @@
         <button class="btn-next" onclick="goNext(4)">Continue &rarr;</button>
       </div>
     </div>
-
+ 
     <!-- Q5: Rehab budget (Q2 = 1, 2, 3) -->
     <div class="slide" id="slide-5">
       <span class="step-badge" id="badge-5">Step 5</span>
@@ -513,7 +513,7 @@
         <button class="btn-next" onclick="goNext(5)">Continue &rarr;</button>
       </div>
     </div>
-
+ 
     <!-- Q6: ARV (Q2 = 1, 2, 3) -->
     <div class="slide" id="slide-6">
       <span class="step-badge" id="badge-6">Step 6</span>
@@ -530,7 +530,7 @@
         <button class="btn-next" onclick="goNext(6)">Continue &rarr;</button>
       </div>
     </div>
-
+ 
     <!-- Q7: Credit score (always shown) -->
     <div class="slide" id="slide-7">
       <span class="step-badge" id="badge-7">Step 7</span>
@@ -548,7 +548,7 @@
         <button class="btn-next" onclick="goNext(7)">Continue &rarr;</button>
       </div>
     </div>
-
+ 
     <!-- Q8: Flips completed (Q2 = 4 only) -->
     <div class="slide" id="slide-8">
       <span class="step-badge" id="badge-8">Step 8</span>
@@ -565,7 +565,7 @@
         <button class="btn-next" onclick="goNext(8)">Continue &rarr;</button>
       </div>
     </div>
-
+ 
     <!-- Q9: Gap funding interest (always) -->
     <div class="slide" id="slide-9">
       <span class="step-badge" id="badge-9">Step 9</span>
@@ -591,7 +591,7 @@
         <button class="btn-next" onclick="goNext(9)">Continue &rarr;</button>
       </div>
     </div>
-
+ 
     <!-- Q10: Full name (always) -->
     <div class="slide" id="slide-10">
       <span class="step-badge" id="badge-10">Step 10</span>
@@ -608,7 +608,7 @@
         <button class="btn-next" onclick="goNext(10)">Continue &rarr;</button>
       </div>
     </div>
-
+ 
     <!-- Q11: Phone (always) -->
     <div class="slide" id="slide-11">
       <span class="step-badge" id="badge-11">Step 11</span>
@@ -626,7 +626,7 @@
         <button class="btn-next" onclick="goNext(11)">Continue &rarr;</button>
       </div>
     </div>
-
+ 
     <!-- Q12: Email (always) -->
     <div class="slide" id="slide-12">
       <span class="step-badge" id="badge-12">Step 12</span>
@@ -644,7 +644,7 @@
         <button class="btn-next btn-submit" onclick="submitSurvey()">Submit Application</button>
       </div>
     </div>
-
+ 
     <!-- Thank you (shown briefly before redirect) -->
     <div class="slide" id="slide-thanks">
       <div class="ty-icon">
@@ -655,22 +655,24 @@
       <div class="ty-title">You're all set!</div>
       <div class="ty-sub">Thanks for applying. We're reviewing your information and will be in touch soon with your funding options.</div>
     </div>
-
+ 
   </div><!-- end survey-card -->
 </div><!-- end survey-wrapper -->
-
+ 
 <script>
   // ============================================================
   // CONFIGURATION
   // ============================================================
-  const REDIRECT_URL_LOW      = 'https://apply.swiftlinecapital.com/tydq';  // credit score 649 and below
-  const REDIRECT_URL_QUALIFY  = 'https://apply.swiftlinecapital.com/apply';  // credit score 650 and above
+  const REDIRECT_URL_LOW        = 'https://apply.swiftlinecapital.com/tydq';      // credit score 649 and below (all paths)
+  const REDIRECT_URL_HAS_PROP   = 'https://apply.swiftlinecapital.com/book';      // has property (Q2=1,2,3) + credit score 650+
+  const REDIRECT_URL_EXPLORING  = 'https://www.swiftlinecapital.com/learn-more';  // exploring/revolving + credit score 650+
   const REDIRECT_DELAY = 2000; // ms to show thank-you before redirecting
   const WEBHOOK_URL    = 'https://services.leadconnectorhq.com/hooks/fbVNgszVHry5I8o9nQRJ/webhook-trigger/2554490a-f801-4f18-b274-b49864f4aa70';
   // ============================================================
-
+ 
   let currentSlide = 1;
-
+  let q2Value = null; // tracks Q2 answer for property question branching
+ 
   // ---- Currency formatting ----
   function formatCurrency(input) {
     // Strip everything except digits
@@ -679,53 +681,57 @@
     const num = parseInt(raw, 10);
     input.value = '$' + num.toLocaleString('en-US');
   }
-
+ 
   // ---- Path logic (driven by Q1 selections) ----
   function isRevolvingOnly() {
     const checked = Array.from(document.querySelectorAll('input[name="q1"]:checked')).map(e => e.value);
     return checked.length === 1 && checked[0] === 'Revolving Line of Credit';
   }
-
+ 
   function getPath() {
     if (isRevolvingOnly()) {
       // Revolving Line of Credit only: skip Q2, Q3, Q4, Q5, Q6, Q8, Q9
       return [1, 7, 10, 11, 12];
     }
-    // Any other selection (including mixed with revolving): full path
+    // Q2 = "Not yet, exploring options" — skip property address (Q3), purchase price (Q4), rehab budget (Q5), ARV (Q6)
+    if (q2Value === '4') {
+      return [1, 2, 7, 8, 9, 10, 11, 12];
+    }
+    // Q2 = has a property (answers 1, 2, 3) or Q2 not yet answered — full path
     return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   }
-
+ 
   function updateProgress() {
     const path  = getPath();
     const pos   = path.indexOf(currentSlide);
     const total = path.length;
     const pct   = ((pos + 1) / total) * 100;
-
+ 
     document.getElementById('progressFill').style.width = pct + '%';
-
+ 
     const badge = document.getElementById('badge-' + currentSlide);
     if (badge) badge.textContent = 'Step ' + (pos + 1) + ' of ' + total;
   }
-
+ 
   function showSlide(num, backwards) {
     const prev = document.getElementById('slide-' + currentSlide);
     if (prev) prev.classList.remove('active', 'slide-back');
-
+ 
     currentSlide = num;
     const next = document.getElementById('slide-' + currentSlide) || document.getElementById('slide-thanks');
     next.classList.remove('slide-back');
     if (backwards) next.classList.add('slide-back');
     next.classList.add('active');
-
+ 
     updateProgress();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
+ 
   // ---- Validation ----
   function validate(slideNum) {
     const err = document.getElementById('err-' + slideNum);
     let valid = true;
-
+ 
     if (slideNum === 1) {
       valid = document.querySelectorAll('input[name="q1"]:checked').length > 0;
     } else if (slideNum === 2) {
@@ -748,36 +754,41 @@
       const v = document.getElementById('q12').value.trim();
       valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
     }
-
+ 
     if (err) err.classList.toggle('show', !valid);
     return valid;
   }
-
+ 
   // ---- Navigation ----
   function goNext(fromSlide) {
     if (!validate(fromSlide)) return;
-
+ 
+    // Capture Q2 answer so getPath() can branch correctly
+    if (fromSlide === 2) {
+      q2Value = document.querySelector('input[name="q2"]:checked').value;
+    }
+ 
     const path = getPath();
     const idx  = path.indexOf(fromSlide);
-
+ 
     if (idx < path.length - 1) {
       showSlide(path[idx + 1], false);
     }
   }
-
+ 
   function goBack(fromSlide) {
     const path = getPath();
     const idx  = path.indexOf(fromSlide);
-
+ 
     if (idx > 0) {
       showSlide(path[idx - 1], true);
     }
   }
-
+ 
   // ---- Submit ----
   async function submitSurvey() {
     if (!validate(12)) return;
-
+ 
     const q2el  = document.querySelector('input[name="q2"]:checked');
     const q2raw = q2el ? q2el.value : '';
     const q2label = q2raw === '1' ? "Yes, it's under contract"
@@ -785,7 +796,7 @@
                   : q2raw === '3' ? "Yes, I own it already"
                   : q2raw === '4' ? "Not yet, I'm still exploring options"
                   : '';
-
+ 
     const answers = {
       loan_types:       Array.from(document.querySelectorAll('input[name="q1"]:checked')).map(e => e.value),
       property_status:  q2label,
@@ -800,7 +811,7 @@
       phone:            document.getElementById('q11').value,
       email:            document.getElementById('q12').value,
     };
-
+ 
     if (WEBHOOK_URL) {
       try {
         await fetch(WEBHOOK_URL, {
@@ -812,26 +823,33 @@
         console.error('Webhook error:', e);
       }
     }
-
-    // Determine redirect based on credit score
+ 
+    // Determine redirect based on credit score AND property status (Q2)
     const creditScore = parseInt(document.getElementById('q7').value.trim(), 10);
-    const redirectTo  = creditScore >= 650 ? REDIRECT_URL_QUALIFY : REDIRECT_URL_LOW;
-
+    let redirectTo;
+    if (creditScore < 650) {
+      // Everyone below 650 goes here regardless of path
+      redirectTo = REDIRECT_URL_LOW;
+    } else if (q2Value === '1' || q2Value === '2' || q2Value === '3') {
+      // Has a property (under contract / not under contract / already owns) + 650+
+      redirectTo = REDIRECT_URL_HAS_PROP;
+    } else {
+      // Exploring options or revolving-only path + 650+
+      redirectTo = REDIRECT_URL_EXPLORING;
+    }
+ 
     // Show thank-you then redirect
     document.getElementById('slide-12').classList.remove('active');
     document.getElementById('slide-thanks').classList.add('active');
     document.getElementById('progressFill').style.width = '100%';
-
+ 
     if (REDIRECT_DELAY > 0) {
       setTimeout(() => { window.location.href = redirectTo; }, REDIRECT_DELAY);
     } else {
       window.location.href = redirectTo;
     }
   }
-
+ 
   // ---- Init ----
   updateProgress();
 </script>
-
-</body>
-</html>
