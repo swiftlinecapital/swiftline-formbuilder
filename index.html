@@ -854,8 +854,10 @@
       redirectTo = REDIRECT_URL_EXPLORING;
     }
  
-    // Immediately redirect the full browser window (breaks out of iframe)
-    window.top.location.href = redirectTo;
+    // Send redirect message to parent GHL page (cross-origin safe)
+    window.parent.postMessage({ swiftlineRedirect: redirectTo }, '*');
+    // Fallback in case not in an iframe
+    try { window.top.location.href = redirectTo; } catch(e) {}
   }
  
   // ---- Init ----
